@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= page.fullTitle %></title>
+  <style type="text/css">
+  </style>
+</head>
+<body>
+  <% if (arguments[0].firstName && arguments[0].lastName) { %>
+  <p>Yth <%= firstName %> <%= lastName %>,</p>
+  <% } %>
+  <!-- body -->
+  <p>Hormat kami,</p>
+
+  <p><%= _meta.site.title %></p>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "bajo-template",
+  "version": "1.0.0",
+  "description": "Template Renderer for Bajo Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardhi/bajo-template.git"
+  },
+  "keywords": [
+    "template",
+    "bajo",
+    "framework",
+    "modular"
+  ],
+  "author": "Ardhi Lukianto <ardhi@lukianto.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ardhi/bajo-template/issues"
+  },
+  "homepage": "https://github.com/ardhi/bajo-template#readme"
+}

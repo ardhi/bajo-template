@@ -15,7 +15,7 @@ function splitContent (input, readFile) {
       content = text.slice(close + end.length)
     }
   }
-  frontMatter = frontMatter ?? {}
+  frontMatter = frontMatter ?? ''
   content = content ?? ''
   return { frontMatter, content }
 }

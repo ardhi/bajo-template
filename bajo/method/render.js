@@ -44,10 +44,12 @@ async function _render (tpl, locals = {}, opts = {}) {
   }
   const { file } = resp
   _detectLoop.call(this, tpl, file, opts)
-  let content = trim(fs.readFileSync(file, 'utf8'))
+  const fileContent = trim(fs.readFileSync(file, 'utf8'))
+  let { content, frontMatter } = this.splitContent(fileContent)
   if (isEmpty(content) && subNs === 'template') {
     content = '<!-- include ' + tpl.replace('.template', '.partial') + ' -->'
   }
+  opts.frontMatter = frontMatter
   opts.partial = opts.partial ?? subNs === 'partial'
   return await _renderString.call(this, content, locals, opts)
 }
@@ -67,7 +69,7 @@ async function render (tpl, locals = {}, opts = {}) {
   let text = await _render.call(this, tpl, locals, opts)
   if (opts.postProcessor) text = await opts.postProcessor({ text, locals, opts })
   await runHook(`${this.name}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
-  if (canCache) await cache.set({ key, value: text, ttl: this.config.cache.maxAgeDur })
+  if (canCache) await cache.set({ key, value: text, ttl: opts.cacheMaxAge ?? this.config.cache.maxAgeDur })
   return text
 }
 

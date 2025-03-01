@@ -1,7 +1,7 @@
 import path from 'path'
 import { buildCompileImports } from './compile.js'
 
-async function handleInclude (content, locals, opts) {
+async function handleInclude (content, locals = {}, opts = {}) {
   const { isEmpty, omit, template, merge } = this.app.bajo.lib._
   const { extractText, breakNsPath } = this.app.bajo
   const start = '<!-- include '
@@ -36,14 +36,14 @@ async function handleInclude (content, locals, opts) {
   return content
 }
 
-export async function _renderString (input, locals = {}, opts = {}) {
-  const { merge, without, isString } = this.app.bajo.lib._
-  let { content, frontMatter } = this.splitContent(input)
+export async function _renderString (content, locals = {}, opts = {}) {
+  const { merge, without, isString, omit } = this.app.bajo.lib._
   let layout
   if (!opts.partial) {
-    const pageFm = await this.parseFrontMatter(frontMatter, opts.lang)
-    locals.page = merge(locals.page, pageFm)
-    layout = locals.page.layout ?? opts.layout ?? (locals.page.ns ? `${locals.page.ns}.layout:/default.html` : 'main.layout:/default.html')
+    const pageFm = await this.parseFrontMatter(opts.frontMatter, opts.lang)
+    if (pageFm.layout) opts.layout = pageFm.layout
+    locals.page = merge(locals.page, omit(pageFm, ['layout']))
+    layout = opts.layout ?? (locals.page.ns ? `${locals.page.ns}.layout:/default.html` : 'main.layout:/default.html')
     const ext = path.extname(layout)
     const { file } = this.resolveLayout(layout, opts)
     let { content: layoutContent, frontMatter: layoutFm } = this.splitContent(file, true)

@@ -31,7 +31,8 @@ async function compile (content, locals, { lang, ttl = 0 } = {}) {
   const _ = this.app.bajo.lib._
   const { template } = _
   const cache = this.app.bajoCache
-  const canCache = this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
+  let canCache = this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
+  if (ttl === -1) canCache = false
   const opts = {
     imports: buildCompileImports.call(this, lang)
   }

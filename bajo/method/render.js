@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import { _renderString } from './render-string.js'
+import path from 'path'
 
 let loopDetector = {}
 
@@ -46,9 +47,8 @@ async function _render (tpl, locals = {}, opts = {}) {
   _detectLoop.call(this, tpl, file, opts)
   const fileContent = trim(fs.readFileSync(file, 'utf8'))
   let { content, frontMatter } = this.splitContent(fileContent)
-  if (isEmpty(content) && subNs === 'template') {
-    content = '<!-- include ' + tpl.replace('.template', '.partial') + ' -->'
-  }
+  if (isEmpty(content) && (subNs === 'template')) content = '<!-- include ' + tpl.replace('.template', '.partial') + ' -->'
+  opts.ext = path.extname(file)
   opts.frontMatter = frontMatter
   opts.partial = opts.partial ?? subNs === 'partial'
   return await _renderString.call(this, content, locals, opts)

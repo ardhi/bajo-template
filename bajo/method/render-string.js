@@ -38,6 +38,10 @@ async function handleInclude (content, locals = {}, opts = {}) {
 
 export async function _renderString (content, locals = {}, opts = {}) {
   const { merge, without, isString, omit } = this.app.bajo.lib._
+  if (opts.ext === '.md' && this.app.bajoMarkdown) {
+    content = await this.compile(content, locals, { lang: opts.lang, ttl: -1 }) // markdown can't process template tags, hence preprocess here
+    content = this.app.bajoMarkdown.parse(content)
+  }
   let layout
   if (!opts.partial) {
     const pageFm = await this.parseFrontMatter(opts.frontMatter, opts.lang)

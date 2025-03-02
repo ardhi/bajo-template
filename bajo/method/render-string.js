@@ -71,8 +71,8 @@ export async function _renderString (content, locals = {}, opts = {}) {
     const fullTitle = locals.page.title ? `${locals.page.title} - ${appTitle}` : appTitle
     locals.page.fullTitle = locals.fullTitle ?? fullTitle
   }
-  content = await handleInclude.call(this, content, locals, opts)
-  return await this.compile(content, locals, { lang: opts.lang, ttl: this.config.cache.maxAgeDur })
+  content = await this.compile(content, locals, { lang: opts.lang, ttl: this.config.cache.maxAgeDur })
+  return await handleInclude.call(this, content, locals, opts)
 }
 
 async function renderString (content, locals = {}, opts = {}) {

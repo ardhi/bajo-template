@@ -1,6 +1,6 @@
 {
   "name": "bajo-template",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Template Renderer for Bajo Framework",
   "main": "index.js",
   "scripts": {

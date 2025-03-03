@@ -19,7 +19,7 @@ function _detectLoop (tpl, file, opts) {
   const { last } = this.app.bajo.lib._
   if (opts.groupId) {
     if (loopDetector[opts.groupId]) {
-      if (last(loopDetector[opts.groupId].file) === file) throw this.plugin.error('loopDetected%s%s', tpl, file)
+      if (last(loopDetector[opts.groupId].file) === file && path.basename(file)[0] !== '~') throw this.error('loopDetected%s%s', tpl, file)
       loopDetector[opts.groupId].file.push(file)
     } else {
       loopDetector[opts.groupId] = {

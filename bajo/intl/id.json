@@ -1,3 +1,4 @@
 {
-  "loopDetected%s%s": "Loop detected: %s (%s)"
+  "loopDetected%s%s": "Loop detected: %s (%s)",
+  "resourceNotFound%s": "Berkas sumber daya '%s' tidak ditemukan"
 }

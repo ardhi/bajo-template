@@ -43,6 +43,7 @@ async function _render (tpl, locals = {}, opts = {}) {
   } else if (subNs === 'partial') {
     resp = this.resolvePartial(tpl, opts)
   }
+  if (!resp) throw this.error('resourceNotFound%s', tpl)
   const { file } = resp
   _detectLoop.call(this, tpl, file, opts)
   const fileContent = trim(fs.readFileSync(file, 'utf8'))

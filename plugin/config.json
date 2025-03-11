@@ -1,9 +1,0 @@
-{
-  "layout": {
-    "fallback": true
-  },
-  "loopDetectorDur": "1m",
-  "cache": {
-    "maxAgeDur": "1s"
-  }
-}

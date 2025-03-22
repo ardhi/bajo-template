@@ -22,7 +22,7 @@ async function factory (pkgName) {
     }
 
     buildCompileImports = (lang) => {
-      const _ = this.app.bajo.lib._
+      const _ = this.lib._
       return {
         _,
         _t: (text, ...args) => {
@@ -48,7 +48,7 @@ async function factory (pkgName) {
     }
 
     _clearLoopDetector = () => {
-      const { omit } = this.app.bajo.lib._
+      const { omit } = this.lib._
       const now = Date.now()
       const omitted = []
       for (const groupId in this.loopDetector) {
@@ -59,7 +59,7 @@ async function factory (pkgName) {
     }
 
     _detectLoop = (tpl, file, opts) => {
-      const { last } = this.app.bajo.lib._
+      const { last } = this.lib._
       if (opts.groupId) {
         if (this.loopDetector[opts.groupId]) {
           if (last(this.loopDetector[opts.groupId].file) === file && path.basename(file)[0] !== '~') throw this.error('loopDetected%s%s', tpl, file)
@@ -75,8 +75,8 @@ async function factory (pkgName) {
 
     _render = async (tpl, locals = {}, opts = {}) => {
       this._clearLoopDetector()
-      const { trim, isEmpty } = this.app.bajo.lib._
-      const { fs } = this.app.bajo.lib
+      const { trim, isEmpty } = this.lib._
+      const { fs } = this.lib
       const { breakNsPath } = this.app.bajo
 
       const { subNs } = breakNsPath(tpl)
@@ -99,7 +99,7 @@ async function factory (pkgName) {
     }
 
     _handleInclude = async (content, locals = {}, opts = {}) => {
-      const { isEmpty, omit, template, merge } = this.app.bajo.lib._
+      const { isEmpty, omit, template, merge } = this.lib._
       const { extractText, breakNsPath } = this.app.bajo
       const start = '<!-- include '
       const end = ' -->'
@@ -134,7 +134,7 @@ async function factory (pkgName) {
     }
 
     _renderString = async (content, locals = {}, opts = {}) => {
-      const { merge, without, isString, omit } = this.app.bajo.lib._
+      const { merge, without, isString, omit } = this.lib._
       if (opts.ext === '.md' && this.app.bajoMarkdown) {
         content = await this.compile(content, locals, { lang: opts.lang, ttl: -1 }) // markdown can't process template tags, hence preprocess here
         content = this.app.bajoMarkdown.parse(content)
@@ -183,7 +183,7 @@ async function factory (pkgName) {
     }
 
     parseFrontMatter = async (input = '', lang) => {
-      const { isEmpty, isPlainObject, isArray, filter, map } = this.app.bajo.lib._
+      const { isEmpty, isPlainObject, isArray, filter, map } = this.lib._
       const { parseObject } = this.app.bajo
       const handlers = map(filter(this.app.bajo.configHandlers, h => !['.js'].includes(h.ext)), h => h.readHandler)
       let success
@@ -201,7 +201,7 @@ async function factory (pkgName) {
 
     compile = async (content, locals, { lang, ttl = 0 } = {}) => {
       locals.attr = locals.attr ?? {}
-      const _ = this.app.bajo.lib._
+      const _ = this.lib._
       const { template } = _
       const cache = this.app.bajoCache
       let canCache = this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
@@ -229,7 +229,7 @@ async function factory (pkgName) {
 
     render = async (tpl, locals = {}, opts = {}) => {
       const { runHook, breakNsPath } = this.app.bajo
-      const { upperFirst } = this.app.bajo.lib._
+      const { upperFirst } = this.lib._
       const cache = this.app.bajoCache
       const key = crypto.createHash('md5').update(`${tpl}:${JSON.stringify(locals)}`).digest('hex')
       const { subNs } = breakNsPath(tpl)
@@ -286,7 +286,7 @@ async function factory (pkgName) {
     }
 
     splitContent = (input, readFile) => {
-      const { fs } = this.app.bajo.lib
+      const { fs } = this.lib
       const start = '---\n'
       const end = '\n---'
 

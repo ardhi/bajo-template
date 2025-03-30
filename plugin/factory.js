@@ -143,8 +143,8 @@ async function factory (pkgName) {
       if (!opts.partial) {
         const pageFm = await this.parseFrontMatter(opts.frontMatter, opts.lang)
         if (pageFm.layout) opts.layout = pageFm.layout
-        locals.page = merge(locals.page, omit(pageFm, ['layout']))
-        layout = opts.layout ?? (locals.page.ns ? `${locals.page.ns}.layout:/default.html` : 'main.layout:/default.html')
+        locals.page = merge({}, locals.page, omit(pageFm, ['layout']))
+        layout = opts.layout ?? locals.page.layout ?? (locals.page.ns ? `${locals.page.ns}.layout:/default.html` : 'main.layout:/default.html')
         const ext = path.extname(layout)
         const { file } = this.resolveLayout(layout, opts)
         let { content: layoutContent, frontMatter: layoutFm } = this.splitContent(file, true)
@@ -305,6 +305,15 @@ async function factory (pkgName) {
       frontMatter = frontMatter ?? ''
       content = content ?? ''
       return { frontMatter, content }
+    }
+
+    // based on: https://medium.com/@paulohfev/problem-solving-how-to-create-an-excerpt-fdb048687928
+    getExcerpt = (content, maxWords = 50, trailChars = '...') => {
+      const listOfWords = content.trim().split(' ')
+      const truncatedContent = listOfWords.slice(0, maxWords).join(' ')
+      const excerpt = truncatedContent + trailChars
+      const output = listOfWords.length > maxWords ? excerpt : content
+      return output
     }
   }
 }

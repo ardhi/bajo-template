@@ -43,6 +43,9 @@ async function factory (pkgName) {
         _parseMarkdown: content => {
           if (!this.app.bajoMarkdown) return content
           return this.app.bajoMarkdown.parseContent(content)
+        },
+        _excerpt: (content, words) => {
+          return this.getExcerpt(content, words)
         }
       }
     }

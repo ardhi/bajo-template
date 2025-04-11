@@ -65,7 +65,10 @@ async function factory (pkgName) {
       const { last } = this.lib._
       if (opts.groupId) {
         if (this.loopDetector[opts.groupId]) {
-          if (last(this.loopDetector[opts.groupId].file) === file && path.basename(file)[0] !== '~') throw this.error('loopDetected%s%s', tpl, file)
+          if (last(this.loopDetector[opts.groupId].file) === file && path.basename(file)[0] !== '~') {
+            // console.log(opts.groupId, this.loopDetector)
+            throw this.error('loopDetected%s%s', tpl, file)
+          }
           this.loopDetector[opts.groupId].file.push(file)
         } else {
           this.loopDetector[opts.groupId] = {

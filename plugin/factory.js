@@ -66,7 +66,6 @@ async function factory (pkgName) {
       if (opts.groupId) {
         if (this.loopDetector[opts.groupId]) {
           if (last(this.loopDetector[opts.groupId].file) === file && path.basename(file)[0] !== '~') {
-            // console.log(opts.groupId, this.loopDetector)
             throw this.error('loopDetected%s%s', tpl, file)
           }
           this.loopDetector[opts.groupId].file.push(file)

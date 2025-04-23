@@ -129,7 +129,7 @@ async function factory (pkgName) {
             nopts.partial = true
             nopts.req = req
             nopts.reply = reply
-            const nlocals = merge({}, locals, attr)
+            const nlocals = merge({}, locals, { attr })
             result = await this.render(resource, nlocals, nopts)
           }
           content = content.replace(pattern, result)

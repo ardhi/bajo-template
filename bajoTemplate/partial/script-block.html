@@ -1,0 +1,13 @@
+<script>
+  <%= block.root.join('\n') %>
+  <% if (block.alpineInitializing) { %>
+  document.addEventListener('alpine:initializing', () => {
+    <%= block.alpineInitializing.join('\n') %>
+  })
+  <% } %>
+  <% if (block.alpineInit) { %>
+  document.addEventListener('alpine:init', () => {
+    <%= block.alpineInit.join('\n') %>
+  })
+  <% } %>
+</script>

@@ -139,7 +139,7 @@ async function factory (pkgName) {
     }
 
     _renderString = async (content, locals = {}, opts = {}) => {
-      const { merge, without, isString, omit } = this.lib._
+      const { merge, without, isString, omit, kebabCase } = this.lib._
       if (opts.ext === '.md' && this.app.bajoMarkdown) {
         content = await this.compile(content, locals, { lang: opts.lang, ttl: -1 }) // markdown can't process template tags, hence preprocess here
         content = this.app.bajoMarkdown.parse(content)
@@ -148,8 +148,13 @@ async function factory (pkgName) {
       if (!opts.partial) {
         const pageFm = await this.parseFrontMatter(opts.frontMatter, opts.lang)
         if (pageFm.layout) opts.layout = pageFm.layout
+        if (pageFm.scriptBlock) opts.scriptBlock = pageFm.scriptBlock
+        if (pageFm.styleBlock) opts.styleBlock = pageFm.styleBlock
         locals.page = merge({}, locals.page, omit(pageFm, ['layout']))
         layout = opts.layout ?? locals.page.layout ?? (locals.page.ns ? `${locals.page.ns}.layout:/default.html` : 'main.layout:/default.html')
+        for (const b of ['scriptBlock', 'styleBlock']) {
+          locals.page[b] = pageFm[b] ?? opts[b] ?? (locals.page.ns ? `${locals.page.ns}.partial:/${kebabCase(b)}.html` : `bajoTemplate.partial:/${kebabCase(b)}.html`)
+        }
         const ext = path.extname(layout)
         const { file } = this.resolveLayout(layout, opts)
         let { content: layoutContent, frontMatter: layoutFm } = this.splitContent(file, true)

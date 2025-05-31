@@ -33,9 +33,13 @@ async function factory (pkgName) {
           opts.lang = opts.lang ?? lang
           return this.app.bajo.format(val, type, opts)
         },
-        _routePath: (input) => {
+        _findRoute: (input) => {
+          if (!this.app.waibu) return false
+          return this.app.waibu.findRoute(input)
+        },
+        _routePath: (input, opts) => {
           if (!this.app.waibu) return input
-          return this.app.waibu.routePath(input)
+          return this.app.waibu.routePath(input, opts)
         },
         _titleize: this.app.bajo.titleize,
         _hasPlugin: name => this.app.bajo.pluginNames.includes(name),

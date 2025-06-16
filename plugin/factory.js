@@ -41,7 +41,7 @@ async function factory (pkgName) {
           if (!this.app.waibu) return input
           return this.app.waibu.routePath(input, opts)
         },
-        _titleize: this.app.bajo.titleize,
+        _titleize: this.lib.aneka.titleize,
         _hasPlugin: name => this.app.bajo.pluginNames.includes(name),
         _jsonStringify: this.app.waibuMpa.jsonStringify,
         _parseMarkdown: content => {
@@ -109,7 +109,8 @@ async function factory (pkgName) {
 
     _handleInclude = async (content, locals = {}, opts = {}) => {
       const { isEmpty, omit, template, merge } = this.lib._
-      const { extractText, breakNsPath } = this.app.bajo
+      const { extractText } = this.lib.aneka
+      const { breakNsPath } = this.app.bajo
       const start = '<!-- include '
       const end = ' -->'
       const imports = this.buildCompileImports(opts.lang)

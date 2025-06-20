@@ -1,4 +1,4 @@
-import resolveResource, { filecheck } from '../lib/resolve-resource.js'
+import resolveResource, { filecheck } from './lib/resolve-resource.js'
 import crypto from 'crypto'
 import path from 'path'
 

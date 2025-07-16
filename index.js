@@ -88,12 +88,16 @@ async function factory (pkgName) {
       const { fs } = this.lib
       const { breakNsPath } = this.app.bajo
 
-      const { subNs } = breakNsPath(tpl)
       let resp
-      if (subNs === 'template') {
-        resp = this.resolveTemplate(tpl, opts)
-      } else if (subNs === 'partial') {
-        resp = this.resolvePartial(tpl, opts)
+      let subNs
+      if (path.isAbsolute(tpl)) resp = { file: tpl }
+      else {
+        subNs = breakNsPath(tpl).subNs
+        if (subNs === 'template') {
+          resp = this.resolveTemplate(tpl, opts)
+        } else if (subNs === 'partial') {
+          resp = this.resolvePartial(tpl, opts)
+        }
       }
       if (!resp) throw this.error('resourceNotFound%s', tpl)
       const { file } = resp
@@ -247,21 +251,24 @@ async function factory (pkgName) {
       const { upperFirst } = this.lib._
       const cache = this.app.bajoCache
       const key = crypto.createHash('md5').update(`${tpl}:${JSON.stringify(locals)}`).digest('hex')
-      const { subNs } = breakNsPath(tpl)
-      const canCache = subNs === 'template' && this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
+      let subNs
+      const isAbsolute = path.isAbsolute(tpl)
+      if (!isAbsolute) subNs = breakNsPath(tpl).subNs
+      const canCache = (isAbsolute || subNs === 'template') && this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
       if (canCache) {
         const item = await cache.get({ key })
         if (item) return item
       }
-      await runHook(`${this.name}:beforeRender${upperFirst(subNs)}`, { tpl, locals, opts })
+      if (subNs) await runHook(`${this.name}:beforeRender${upperFirst(subNs)}`, { tpl, locals, opts })
       let text = await this._render(tpl, locals, opts)
       if (opts.postProcessor) text = await opts.postProcessor({ text, locals, opts })
-      await runHook(`${this.name}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
+      if (subNs) await runHook(`${this.name}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
       if (canCache) await cache.set({ key, value: text, ttl: opts.cacheMaxAge ?? this.config.cache.maxAgeDur })
       return text
     }
 
     resolveLayout = (item = '', opts = {}) => {
+      const { find } = this.lib._
       const fallbackHandler = ({ file, exts, ns, subSubNs, type, theme }) => {
         const dir = ''
         const base = 'default'
@@ -271,9 +278,14 @@ async function factory (pkgName) {
           const check = `${this.app.main.dir.pkg}/${this.name}/${type}/_${theme}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
-        // check mail: common
+        // check main: common
         if (!file) {
           const check = `${this.app.main.dir.pkg}/${this.name}/${type}`
+          file = filecheck.call(this, { dir, base, exts, check })
+        }
+        if (theme && !file) {
+          const otheme = find(this.app.waibuMpa.themes, { name: theme })
+          const check = `${otheme.plugin.dir.pkg}/${this.name}/extend/${this.name}/${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check fallback: common

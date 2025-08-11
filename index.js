@@ -87,7 +87,7 @@ async function factory (pkgName) {
 
     _render = async (tpl, locals = {}, opts = {}) => {
       this._clearLoopDetector()
-      const { trim, isEmpty } = this.lib._
+      const { trim, isEmpty, last } = this.lib._
       const { fs } = this.lib
       const { breakNsPath } = this.app.bajo
 
@@ -107,7 +107,14 @@ async function factory (pkgName) {
       this._detectLoop(tpl, file, opts)
       const fileContent = trim(fs.readFileSync(file, 'utf8'))
       let { content, frontMatter } = this.splitContent(fileContent)
-      if (isEmpty(content) && (subNs === 'template')) content = '<!-- include ' + tpl.replace('.template', '.partial') + ' -->'
+      if (isEmpty(content)) {
+        const sep = '/waibuMpa/route/'
+        if (path.isAbsolute(tpl) && tpl.includes(sep)) { // for direct waibuMpa's route
+          const parts = tpl.split(sep)
+          const ns = last(parts[0].split('/'))
+          content = `<!-- include ${ns}.partial:/${parts[1]} -->`
+        } else content = '<!-- include ' + tpl.replace('.template', '.partial') + ' -->'
+      }
       opts.ext = path.extname(file)
       opts.frontMatter = frontMatter
       opts.partial = opts.partial ?? subNs === 'partial'

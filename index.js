@@ -51,7 +51,7 @@ async function factory (pkgName) {
         _excerpt: (content, words) => {
           return this.getExcerpt(content, words)
         },
-        _dumo: (value, noPre) => {
+        _dump: (value, noPre) => {
           return (noPre ? '' : '<pre>') + JSON.stringify(value, null, 2) + (noPre ? '' : '</pre>')
         }
       }

@@ -205,7 +205,7 @@ async function factory (pkgName) {
       const subNses = ['layout', 'template', 'partial']
       const { ns, path, subNs, subSubNs, qs } = this.app.bajo.breakNsPath(name)
       const plugin = this.app.bajo.getPlugin(ns)
-      const dir = `${plugin.dir.pkg}/bajoTemplate`
+      const dir = `${plugin.dir.pkg}/extend/bajoTemplate`
       if (!subNses.includes(subNs)) throw this.error('unknownResource%s', name)
       const fullPath = subSubNs ? `${dir}/${subSubNs}/${subNs}${path}` : `${dir}/${subNs}${path}`
       return { ns, subNs, subSubNs, path, qs, fullPath }
@@ -285,27 +285,27 @@ async function factory (pkgName) {
         if (!this.config.layout.fallback) return false
         // check main: theme specific
         if (theme && !file) {
-          const check = `${this.app.main.dir.pkg}/${this.name}/${type}/_${theme}`
+          const check = `${this.app.main.dir.pkg}/extend/${this.name}/${type}/_${theme}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check main: common
         if (!file) {
-          const check = `${this.app.main.dir.pkg}/${this.name}/${type}`
+          const check = `${this.app.main.dir.pkg}/extend/${this.name}/${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         if (theme && !file) {
           const otheme = find(this.app.waibuMpa.themes, { name: theme })
-          const check = `${otheme.plugin.dir.pkg}/${this.name}/extend/${this.name}/${type}`
+          const check = `${otheme.plugin.dir.pkg}/extend/${this.name}/extend/${this.name}/${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check fallback: common
         if (!file) {
-          const check = `${this.app[ns].dir.pkg}/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
+          const check = `${this.app[ns].dir.pkg}/extend/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check general fallback
         if (!file) {
-          const check = `${this.dir.pkg}/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
+          const check = `${this.dir.pkg}/extend/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         return file

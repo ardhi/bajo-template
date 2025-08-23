@@ -5,7 +5,7 @@ import path from 'path'
 async function factory (pkgName) {
   const me = this
 
-  return class BajoTemplate extends this.lib.BajoPlugin {
+  return class BajoTemplate extends this.lib.Plugin {
     constructor () {
       super(pkgName, me.app)
       this.alias = 'tpl'

@@ -5,10 +5,11 @@ import path from 'path'
 async function factory (pkgName) {
   const me = this
 
-  return class BajoTemplate extends this.lib.Plugin {
+  class BajoTemplate extends this.lib.Plugin {
+    static alias = 'tpl'
+
     constructor () {
       super(pkgName, me.app)
-      this.alias = 'tpl'
       this.config = {
         layout: {
           fallback: true
@@ -42,7 +43,7 @@ async function factory (pkgName) {
           return this.app.waibu.routePath(input, opts)
         },
         _titleize: this.lib.aneka.titleize,
-        _hasPlugin: name => this.app.bajo.pluginNames.includes(name),
+        _hasPlugin: name => this.app.getPluginNames().includes(name),
         _jsonStringify: this.app.waibuMpa.jsonStringify,
         _parseMarkdown: content => {
           if (!this.app.bajoMarkdown) return content
@@ -353,6 +354,8 @@ async function factory (pkgName) {
       return output
     }
   }
+
+  return BajoTemplate
 }
 
 export default factory

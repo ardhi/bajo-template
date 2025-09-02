@@ -43,7 +43,7 @@ async function factory (pkgName) {
           return this.app.waibu.routePath(input, opts)
         },
         _titleize: this.app.lib.aneka.titleize,
-        _hasPlugin: name => this.app.getPluginNames().includes(name),
+        _hasPlugin: name => this.app.getAllNs().includes(name),
         _jsonStringify: this.app.waibuMpa.jsonStringify,
         _parseMarkdown: content => {
           if (!this.app.bajoMarkdown) return content
@@ -270,10 +270,10 @@ async function factory (pkgName) {
         const item = await cache.get({ key })
         if (item) return item
       }
-      if (subNs) await runHook(`${this.name}:beforeRender${upperFirst(subNs)}`, { tpl, locals, opts })
+      if (subNs) await runHook(`${this.ns}:beforeRender${upperFirst(subNs)}`, { tpl, locals, opts })
       let text = await this._render(tpl, locals, opts)
       if (opts.postProcessor) text = await opts.postProcessor({ text, locals, opts })
-      if (subNs) await runHook(`${this.name}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
+      if (subNs) await runHook(`${this.ns}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
       if (canCache) await cache.set({ key, value: text, ttl: opts.cacheMaxAge ?? this.config.cache.maxAgeDur })
       return text
     }
@@ -286,27 +286,27 @@ async function factory (pkgName) {
         if (!this.config.layout.fallback) return false
         // check main: theme specific
         if (theme && !file) {
-          const check = `${this.app.main.dir.pkg}/extend/${this.name}/${type}/_${theme}`
+          const check = `${this.app.main.dir.pkg}/extend/${this.ns}/${type}/_${theme}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check main: common
         if (!file) {
-          const check = `${this.app.main.dir.pkg}/extend/${this.name}/${type}`
+          const check = `${this.app.main.dir.pkg}/extend/${this.ns}/${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         if (theme && !file) {
           const otheme = find(this.app.waibuMpa.themes, { name: theme })
-          const check = `${otheme.plugin.dir.pkg}/extend/${this.name}/extend/${this.name}/${type}`
+          const check = `${otheme.plugin.dir.pkg}/extend/${this.ns}/extend/${this.ns}/${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check fallback: common
         if (!file) {
-          const check = `${this.app[ns].dir.pkg}/extend/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
+          const check = `${this.app[ns].dir.pkg}/extend/${this.ns}/${subSubNs ? (subSubNs + '/') : ''}${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         // check general fallback
         if (!file) {
-          const check = `${this.dir.pkg}/extend/${this.name}/${subSubNs ? (subSubNs + '/') : ''}${type}`
+          const check = `${this.dir.pkg}/extend/${this.ns}/${subSubNs ? (subSubNs + '/') : ''}${type}`
           file = filecheck.call(this, { dir, base, exts, check })
         }
         return file

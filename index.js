@@ -16,7 +16,7 @@ async function factory (pkgName) {
    *
    * @class
    */
-  class BajoTemplate extends this.app.pluginClass.base {
+  class BajoTemplate extends this.app.baseClass.Base {
     static alias = 'tpl'
 
     constructor () {
@@ -225,7 +225,7 @@ async function factory (pkgName) {
 
     parseFrontMatter = async (input = '', lang) => {
       const { isEmpty, isPlainObject, isArray, filter, map } = this.app.lib._
-      const { parseObject } = this.app.bajo
+      const { parseObject } = this.app.lib
       const handlers = map(filter(this.app.configHandlers, h => !['.js'].includes(h.ext)), h => h.readHandler)
       let success
       for (const handler of handlers) {
@@ -242,8 +242,7 @@ async function factory (pkgName) {
 
     compile = async (content, locals, { lang, ttl = 0 } = {}) => {
       locals.attr = locals.attr ?? {}
-      const _ = this.app.lib._
-      const { template } = _
+      const { template } = this.app.lib._
       const cache = this.app.bajoCache
       let canCache = this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
       if (ttl === -1) canCache = false

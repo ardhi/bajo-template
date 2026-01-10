@@ -17,8 +17,6 @@ async function factory (pkgName) {
    * @class
    */
   class BajoTemplate extends this.app.baseClass.Base {
-    static alias = 'tpl'
-
     constructor () {
       super(pkgName, me.app)
       this.config = {

@@ -168,7 +168,7 @@ async function factory (pkgName) {
     }
 
     _renderString = async (content, locals = {}, opts = {}) => {
-      const { merge, without, isString, omit, kebabCase } = this.app.lib._
+      const { merge, without, isString, omit, kebabCase, get } = this.app.lib._
       if (opts.ext === '.md' && this.app.bajoMarkdown) {
         content = await this.compile(content, locals, { lang: opts.lang, ttl: -1 }) // markdown can't process template tags, hence preprocess here
         content = this.app.bajoMarkdown.parse(content)
@@ -203,9 +203,9 @@ async function factory (pkgName) {
         }
         if (layoutFm.title && !locals.page.title) locals.page.title = layoutFm.title
         content = layoutContent.replace('<!-- body -->', content)
-        const appTitle = this.t(locals.page.appTitle, { lang: opts.lang })
-        const fullTitle = locals.page.title ? `${locals.page.title} - ${appTitle}` : appTitle
-        locals.page.fullTitle = locals.fullTitle ?? fullTitle
+        const usePluginTitle = get(this, 'app.waibuMpa.config.page.usePluginTitle')
+        const fullTitle = usePluginTitle ? `${locals.page.title} - ${this.app.waibuMpa.getPluginTitle(locals.page.ns, opts.lang)}` : locals.page.title
+        locals.page.fullTitle = locals.page.fullTitle ?? fullTitle
       }
       content = await this.compile(content, locals, { lang: opts.lang, ttl: this.config.cache.maxAgeDur })
       return await this._handleInclude(content, locals, opts)

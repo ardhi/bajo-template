@@ -235,7 +235,7 @@ async function factory (pkgName) {
         }
       }
       if (isEmpty(success)) return {}
-      return parseObject(success, { parseValue: true, lang }) ?? {}
+      return parseObject(success, { parseValue: false, lang }) ?? {}
     }
 
     compile = async (content, locals, { lang, ttl = 0 } = {}) => {

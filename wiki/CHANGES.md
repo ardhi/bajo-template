@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-02-09
+
+- [2.3.0] Template folder reposition
+
 ## 2026-02-05
 
 - [2.2.2] Bug fix on front matter parsing

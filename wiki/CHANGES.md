@@ -3,6 +3,7 @@
 ## 2026-02-09
 
 - [2.3.0] Template folder reposition
+- [2.3.1] Move ```common``` template folder to ```_common```
 
 ## 2026-02-05
 

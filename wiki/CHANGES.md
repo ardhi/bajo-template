@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-02-17
+
+- [2.5.0] Add ability to extend template by domain
+
 ## 2026-02-15
 
 - [2.4.0] Template folder reposition

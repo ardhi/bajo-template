@@ -1,5 +1,10 @@
 # Changes
 
+## 2026-02-21
+
+- [2.5.1] Bug fix on layout fallback
+- [2.5.1] Refactoring ```resolveResource()``` to be more modular
+
 ## 2026-02-17
 
 - [2.5.0] Add ability to extend template by domain

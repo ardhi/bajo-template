@@ -1,4 +1,4 @@
-import resolveResource, { filecheck } from './lib/resolve-resource.js'
+import resolveResource, { checking } from './lib/resolve-resource.js'
 import crypto from 'crypto'
 import path from 'path'
 
@@ -287,37 +287,10 @@ async function factory (pkgName) {
     }
 
     resolveLayout = (item = '', opts = {}) => {
-      const { find } = this.app.lib._
-      const fallbackHandler = ({ file, exts, ns, subSubNs, type, theme }) => {
-        const dir = ''
-        const base = 'default'
+      const fallbackHandler = ({ type, ns, subSubNs, dir, exts, theme, req }) => {
         if (!this.config.layout.fallback) return false
-        // check main: theme specific
-        if (theme && !file) {
-          const check = `${this.app.main.dir.pkg}/extend/${this.ns}/${type}/_${theme}`
-          file = filecheck.call(this, { dir, base, exts, check })
-        }
-        // check main: common
-        if (!file) {
-          const check = `${this.app.main.dir.pkg}/extend/${this.ns}/${type}`
-          file = filecheck.call(this, { dir, base, exts, check })
-        }
-        if (theme && !file) {
-          const otheme = find(this.app.waibuMpa.themes, { name: theme })
-          const check = `${otheme.plugin.dir.pkg}/extend/${this.ns}/extend/${this.ns}/${type}`
-          file = filecheck.call(this, { dir, base, exts, check })
-        }
-        // check fallback: common
-        if (!file) {
-          const check = `${this.app[ns].dir.pkg}/extend/${this.ns}/${subSubNs ? (subSubNs + '/') : ''}${type}`
-          file = filecheck.call(this, { dir, base, exts, check })
-        }
-        // check general fallback
-        if (!file) {
-          const check = `${this.dir.pkg}/extend/${this.ns}/${subSubNs ? (subSubNs + '/') : ''}${type}`
-          file = filecheck.call(this, { dir, base, exts, check })
-        }
-        return file
+        const base = 'default'
+        return checking.call(this, { type, ns, subSubNs, dir, base, exts, theme, req })
       }
 
       return resolveResource.call(this, 'layout', item, opts, fallbackHandler)

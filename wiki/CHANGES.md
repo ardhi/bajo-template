@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-03-14
+
+- [2.5.2] Bug fix on ```resolveResource()```
+
 ## 2026-02-21
 
 - [2.5.1] Bug fix on layout fallback

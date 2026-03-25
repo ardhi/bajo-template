@@ -25,7 +25,7 @@ async function factory (pkgName) {
         },
         loopDetectorDur: '1m',
         cache: {
-          maxAgeDur: '1s'
+          ttlDur: '1s'
         }
       }
       this.loopDetector = {}
@@ -270,7 +270,7 @@ async function factory (pkgName) {
       let subNs
       const isAbsolute = path.isAbsolute(tpl)
       if (!isAbsolute) subNs = breakNsPath(tpl).subNs
-      const canCache = (isAbsolute || subNs === 'template') && this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
+      const canCache = (isAbsolute || subNs === 'template') && this.config.cache !== false && cache
       if (canCache) {
         const item = await cache.get({ key })
         if (item) return item
@@ -279,7 +279,7 @@ async function factory (pkgName) {
       let text = await this._render(tpl, locals, opts)
       if (opts.postProcessor) text = await opts.postProcessor({ text, locals, opts })
       if (subNs) await runHook(`${this.ns}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
-      if (canCache) await cache.set({ key, value: text, ttl: opts.cacheMaxAge ?? this.config.cache.maxAgeDur })
+      if (canCache) await cache.set({ key, value: text, ttl: opts.ttlDur ?? this.config.cache.ttlDur })
       return text
     }
 

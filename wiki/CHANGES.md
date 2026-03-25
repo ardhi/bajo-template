@@ -3,6 +3,7 @@
 ## 2026-03-25
 
 - [2.5.3] Bug fix in cache handling for template function
+- [2.5.4] Change ```maxAgeDur``` to ```ttlDur``` to align with bajoCache's terminology
 
 ## 2026-03-14
 

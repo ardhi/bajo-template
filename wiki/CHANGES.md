@@ -1,12 +1,16 @@
 # Changes
 
+## 2026-03-25
+
+- [2.5.3] Bug fix in cache handling for template function
+
 ## 2026-03-14
 
-- [2.5.2] Bug fix on ```resolveResource()```
+- [2.5.2] Bug fix in ```resolveResource()```
 
 ## 2026-02-21
 
-- [2.5.1] Bug fix on layout fallback
+- [2.5.1] Bug fix in layout fallback
 - [2.5.1] Refactoring ```resolveResource()``` to be more modular
 
 ## 2026-02-17
@@ -24,7 +28,7 @@
 
 ## 2026-02-05
 
-- [2.2.2] Bug fix on front matter parsing
+- [2.2.2] Bug fix in front matter parsing
 
 ## 2026-01-21
 

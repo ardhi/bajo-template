@@ -239,23 +239,20 @@ async function factory (pkgName) {
     }
 
     compile = async (content, locals, { lang, ttl = 0 } = {}) => {
-      locals.attr = locals.attr ?? {}
+      const { get: getCache, set: setCache } = this.app.bajoCache ?? {}
       const { template } = this.app.lib._
-      const cache = this.app.bajoCache
-      let canCache = this.config.cache !== false && cache && this.app.bajo.config.env !== 'dev'
-      if (ttl === -1) canCache = false
+      locals.attr = locals.attr ?? {}
       const opts = {
         imports: this.buildCompileImports(lang)
       }
-
+      const key = 'fn:' + crypto.createHash('md5').update(content).digest('hex')
       let item
-      if (canCache) {
-        const key = 'fn:' + crypto.createHash('md5').update(content).digest('hex')
-        const value = template(content, opts)
-        item = await cache.sync({ key, value, ttl })
-      } else {
-        item = template(content, opts)
+      if (getCache) {
+        item = await getCache({ key })
+        if (item) return item(locals)
       }
+      item = template(content, opts)
+      if (setCache) await setCache({ key, value: item, ttl })
       return item(locals)
     }
 

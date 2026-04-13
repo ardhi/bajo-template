@@ -1,5 +1,10 @@
 # Changes
 
+## 2026-04-13
+
+- [2.6.0] Add ```_getSetting()``` template function
+- [2.6.0] ```buildCompileImports()``` now accept ```locals``` and ```req``` as its parameters
+
 ## 2026-03-25
 
 - [2.5.3] Bug fix in cache handling for template function

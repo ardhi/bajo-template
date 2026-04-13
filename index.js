@@ -31,16 +31,16 @@ async function factory (pkgName) {
       this.loopDetector = {}
     }
 
-    buildCompileImports = (lang) => {
+    buildCompileImports = (locals = {}, req = {}) => {
       const _ = this.app.lib._
       return {
         _,
         _t: (text, ...args) => {
-          const params = [...args, { lang }]
+          const params = [...args, { lang: req.lang }]
           return this.t(text, ...params)
         },
         _format: (val, type, opts = {}) => {
-          opts.lang = opts.lang ?? lang
+          opts.lang = opts.lang ?? req.lang
           return this.app.bajo.format(val, type, opts)
         },
         _findRoute: (input) => {
@@ -63,6 +63,14 @@ async function factory (pkgName) {
         },
         _dump: (value, noPre) => {
           return (noPre ? '' : '<pre>') + JSON.stringify(value, null, 2) + (noPre ? '' : '</pre>')
+        },
+        _getSetting: (key, defValue) => {
+          if (!this.app.waibu) return _.get(locals, `schema.view.${key}`, defValue)
+          const cfg = this.app.waibu.getSetting(key, { defValue, req })
+          const { path } = this.app.bajo.breakNsPath(key)
+          const paths = path.replaceAll('/', '.').split('.')
+          if (paths[0] === '') paths.shift()
+          return _.get(locals, `schema.view.${paths.join('.')}`, cfg)
         }
       }
     }
@@ -137,7 +145,7 @@ async function factory (pkgName) {
       const { breakNsPath } = this.app.bajo
       const start = '<!-- include '
       const end = ' -->'
-      const imports = this.buildCompileImports(opts.lang)
+      const imports = this.buildCompileImports(locals, opts.req)
       while (content.includes(start) && content.includes(end)) {
         const { pattern, result: rsc } = extractText(content, start, end)
         if (!isEmpty(rsc)) {
@@ -170,7 +178,7 @@ async function factory (pkgName) {
     _renderString = async (content, locals = {}, opts = {}) => {
       const { merge, without, isString, omit, kebabCase, get } = this.app.lib._
       if (opts.ext === '.md' && this.app.bajoMarkdown) {
-        content = await this.compile(content, locals, { lang: opts.lang, ttl: -1 }) // markdown can't process template tags, hence preprocess here
+        content = await this.compile(content, locals, { ttl: -1, req: opts.req }) // markdown can't process template tags, hence preprocess here
         content = this.app.bajoMarkdown.parse(content)
       }
       let layout
@@ -207,7 +215,7 @@ async function factory (pkgName) {
         const fullTitle = usePluginTitle ? `${locals.page.title} - ${this.app.waibuMpa.getPluginTitle(locals.page.ns, opts.lang)}` : locals.page.title
         locals.page.fullTitle = locals.page.fullTitle ?? fullTitle
       }
-      content = await this.compile(content, locals, { lang: opts.lang, ttl: this.config.cache.maxAgeDur })
+      content = await this.compile(content, locals, { ttl: this.config.cache.maxAgeDu, req: opts.req })
       return await this._handleInclude(content, locals, opts)
     }
 
@@ -238,12 +246,12 @@ async function factory (pkgName) {
       return parseObject(success, { parseValue: false, lang }) ?? {}
     }
 
-    compile = async (content, locals, { lang, ttl = 0 } = {}) => {
+    compile = async (content, locals, { ttl = 0, req = {} } = {}) => {
       const { get: getCache, set: setCache } = this.app.bajoCache ?? {}
       const { template } = this.app.lib._
       locals.attr = locals.attr ?? {}
       const opts = {
-        imports: this.buildCompileImports(lang)
+        imports: this.buildCompileImports(locals, req)
       }
       const key = 'fn:' + crypto.createHash('md5').update(content).digest('hex')
       let item

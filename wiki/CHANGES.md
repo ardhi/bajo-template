@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-04-25
+
+- [2.6.1] Bug fix in ```render()```
+
 ## 2026-04-13
 
 - [2.6.0] Add ```_getSetting()``` template function

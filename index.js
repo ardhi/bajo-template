@@ -273,21 +273,21 @@ async function factory (pkgName) {
     render = async (tpl, locals = {}, opts = {}) => {
       const { runHook, breakNsPath } = this.app.bajo
       const { upperFirst } = this.app.lib._
-      const cache = this.app.bajoCache
+      const { get, set } = this.app.bajoCache ?? {}
       const key = crypto.createHash('md5').update(`${tpl}:${JSON.stringify(locals)}`).digest('hex')
       let subNs
       const isAbsolute = path.isAbsolute(tpl)
       if (!isAbsolute) subNs = breakNsPath(tpl).subNs
-      const canCache = (isAbsolute || subNs === 'template') && this.config.cache !== false && cache
+      const canCache = (isAbsolute || subNs === 'template') && this.config.cache !== false && get && set
       if (canCache) {
-        const item = await cache.get({ key })
+        const item = await get({ key })
         if (item) return item
       }
       if (subNs) await runHook(`${this.ns}:beforeRender${upperFirst(subNs)}`, { tpl, locals, opts })
       let text = await this._render(tpl, locals, opts)
       if (opts.postProcessor) text = await opts.postProcessor({ text, locals, opts })
       if (subNs) await runHook(`${this.ns}:afterRender${upperFirst(subNs)}`, { tpl, locals, opts, text })
-      if (canCache) await cache.set({ key, value: text, ttl: opts.ttlDur ?? this.config.cache.ttlDur })
+      if (canCache) await set({ key, value: text, ttl: opts.ttlDur ?? this.config.cache.ttlDur })
       return text
     }
 

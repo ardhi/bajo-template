@@ -332,12 +332,16 @@ async function factory (pkgName) {
     }
 
     // based on: https://medium.com/@paulohfev/problem-solving-how-to-create-an-excerpt-fdb048687928
-    getExcerpt = (content, maxWords = 50, trailChars = '...') => {
+    getExcerpt = (content = '', maxWords = 50, trailChars = '...') => {
       const listOfWords = content.trim().split(' ')
       const truncatedContent = listOfWords.slice(0, maxWords).join(' ')
       const excerpt = truncatedContent + trailChars
-      const output = listOfWords.length > maxWords ? excerpt : content
-      return output
+      return listOfWords.length > maxWords ? excerpt : content
+    }
+
+    getTruncated = (content = '', maxChars = 50, trailChars = '...') => {
+      const truncated = content.slice(0, maxChars)
+      return truncated.length !== content.length ? (truncated + trailChars) : content
     }
   }
 

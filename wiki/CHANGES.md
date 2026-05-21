@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-05-22
+
+- [2.7.0] Add ```getTruncated()```
+
 ## 2026-04-25
 
 - [2.6.1] Bug fix in ```render()```

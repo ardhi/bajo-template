@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-06-12
+
+- [2.8.0] Necessary updates to ```bajo@2.18.0``` specs
+
 ## 2026-05-22
 
 - [2.7.0] Add ```getTruncated()```

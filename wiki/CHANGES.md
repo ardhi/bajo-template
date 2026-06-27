@@ -4,6 +4,9 @@
 
 - [2.9.0] Add documentations
 - [2.9.0] Add tests
+- [2.9.0] Add ```resolveResource()```
+- [2.9.0] Add ```_findFile()```
+- [2.9.1] Bug fix in ```parseFrontMatter()```
 
 ## 2026-06-12
 

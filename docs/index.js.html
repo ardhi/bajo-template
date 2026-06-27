@@ -398,20 +398,12 @@ async function factory (pkgName) {
      * @returns {Promise&lt;object>} Parsed front matter
      */
     parseFrontMatter = async (input = '', lang) => {
-      const { isEmpty, isPlainObject, isArray, filter, map } = this.app.lib._
+      const { isEmpty } = this.app.lib._
+      const { readAsConfig } = this.app.bajo
       const { parseObject } = this.app.lib
-      const handlers = map(filter(this.app.configHandlers, h => !['.js'].includes(h.ext)), h => h.readHandler)
-      let success
-      for (const handler of handlers) {
-        if (success) break
-        try {
-          const result = await handler(input, true)
-          if (isPlainObject(result) || isArray(result)) success = result
-        } catch (err) {
-        }
-      }
-      if (isEmpty(success)) return {}
-      return parseObject(success, { parseValue: false, lang }) ?? {}
+      const result = await readAsConfig(input)
+      if (isEmpty(result)) return {}
+      return parseObject(result, { parseValue: false, lang }) ?? {}
     }
 
     /**

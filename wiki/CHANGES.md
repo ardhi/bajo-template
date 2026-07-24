@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-07-24
+
+- [2.9.3] Bug fix in `parseFrontMatter()`
+
 ## 2026-06-27
 
 - [2.9.0] Add documentations

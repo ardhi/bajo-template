@@ -315,7 +315,7 @@ async function factory (pkgName) {
      * @returns {string|null} - Found file path or null
      */
     _findFile = (options = {}) => {
-      const { type, ns, subSubNs, dir, base, exts, theme, req } = options
+      const { type, ns, subSubNs, dir, base, exts, theme, req, item } = options
       const checking = ({ check, info }) => {
         const { fs } = this.app.lib
         let file
@@ -327,8 +327,8 @@ async function factory (pkgName) {
             break
           }
         }
-        if (this.config.log.resolver) {
-          this.log.trace('Checking %s for "%s" -> %s', info, base, check)
+        if (this.config.log.resolver === type) {
+          this.log.trace('%s => Checking %s for "%s" -> %s', item, info, base, check)
           if (file) this.log.trace('OK: %s', file)
           else this.log.trace('Failed')
         }
@@ -399,7 +399,7 @@ async function factory (pkgName) {
       const { isEmpty } = this.app.lib._
       const { parseWithConfig } = this.app.bajo
       const { parseObject } = this.app.lib
-      const result = await parseWithConfig(input)
+      const result = await parseWithConfig(input, null, { defValue: {} })
       if (isEmpty(result)) return {}
       return parseObject(result, { parseValue: false, lang }) ?? {}
     }
@@ -507,7 +507,7 @@ async function factory (pkgName) {
       if (opts.lang) exts.unshift(`.${opts.lang}${ext}`)
       let theme
       if (opts.theme && this.app.waibuMpa && opts.req) theme = find(this.app.waibuMpa.themes, { name: opts.theme })
-      let file = this._findFile({ type, ns, subSubNs, dir, base, exts, theme, req: opts.req })
+      let file = this._findFile({ type, ns, subSubNs, dir, base, exts, theme, req: opts.req, item })
       if (!file) {
         if (fallbackHandler) file = fallbackHandler.call(this, { dir, base, exts, ns, subSubNs, type, theme, req: opts.req })
         if (opts.default) {
@@ -533,7 +533,7 @@ async function factory (pkgName) {
       const fallbackHandler = ({ type, ns, subSubNs, dir, exts, theme, req }) => {
         if (!this.config.layout.fallback) return false
         const base = 'default'
-        return this._findFile({ type, ns, subSubNs, dir, base, exts, theme, req })
+        return this._findFile({ type, ns, subSubNs, dir, base, exts, theme, req, item })
       }
 
       return this.resolveResource('layout', item, opts, fallbackHandler)

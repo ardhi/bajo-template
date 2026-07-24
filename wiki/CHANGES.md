@@ -3,6 +3,7 @@
 ## 2026-07-24
 
 - [2.9.3] Bug fix in `parseFrontMatter()`
+- [2.10.0] Rename `parseWithConfig()` to `parseConfig()`
 
 ## 2026-06-27
 

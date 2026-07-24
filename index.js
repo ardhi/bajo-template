@@ -397,9 +397,9 @@ async function factory (pkgName) {
      */
     parseFrontMatter = async (input = '', lang) => {
       const { isEmpty } = this.app.lib._
-      const { readAsConfig } = this.app.bajo
+      const { parseWithConfig } = this.app.bajo
       const { parseObject } = this.app.lib
-      const result = await readAsConfig(input)
+      const result = await parseWithConfig(input)
       if (isEmpty(result)) return {}
       return parseObject(result, { parseValue: false, lang }) ?? {}
     }

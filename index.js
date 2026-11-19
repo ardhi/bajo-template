@@ -64,6 +64,7 @@ async function factory (pkgName) {
      */
     buildCompileImports = (locals = {}, req = {}) => {
       const _ = this.app.lib._
+      const { createExcerpt } = this.app.lib.aneka
       return {
         _,
         _t: (text, ...args) => {
@@ -90,7 +91,7 @@ async function factory (pkgName) {
           return this.app.bajoMarkdown.parseContent(content)
         },
         _excerpt: (content, words) => {
-          return this.getExcerpt(content, words)
+          return createExcerpt({ content, maxWords: words })
         },
         _dump: (value, noPre) => {
           return (noPre ? '' : '<pre>') + JSON.stringify(value, null, 2) + (noPre ? '' : '</pre>')
@@ -591,37 +592,6 @@ async function factory (pkgName) {
       frontMatter = frontMatter ?? ''
       content = content ?? ''
       return { frontMatter, content }
-    }
-
-    /**
-     * Get an excerpt from the content.
-     *
-     * @method
-     * @param {string} content - Content string
-     * @param {number} maxWords - Maximum number of words
-     * @param {string} trailChars - Trailing characters
-     * @returns {string} Excerpt
-     * @see {@link https://medium.com/@paulohfev/problem-solving-how-to-create-an-excerpt-fdb048687928|Problem Solving: How to Create an Excerpt}
-     */
-    getExcerpt = (content = '', maxWords = 50, trailChars = '...') => {
-      const listOfWords = content.trim().split(' ')
-      const truncatedContent = listOfWords.slice(0, maxWords).join(' ')
-      const excerpt = truncatedContent + trailChars
-      return listOfWords.length > maxWords ? excerpt : content
-    }
-
-    /**
-     * Get a truncated version of the content.
-     *
-     * @method
-     * @param {string} content - Content string
-     * @param {number} maxChars - Maximum number of characters
-     * @param {string} trailChars - Trailing characters
-     * @returns {string} Truncated content
-     */
-    getTruncated = (content = '', maxChars = 50, trailChars = '...') => {
-      const truncated = content.slice(0, maxChars)
-      return truncated.length !== content.length ? (truncated + trailChars) : content
     }
   }
 

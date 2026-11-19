@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-11-20
+
+- [2.11.0] Refactor `getExcerpt()` to use `aneka.createExcerpt()` instead
+
 ## 2026-07-24
 
 - [2.9.3] Bug fix in `parseFrontMatter()`

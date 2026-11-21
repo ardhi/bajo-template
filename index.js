@@ -593,6 +593,21 @@ async function factory (pkgName) {
       content = content ?? ''
       return { frontMatter, content }
     }
+
+    formatContent = (content, options = {}) => {
+      const { smallHeading = false } = options
+      const { parse } = this.app.bajoMarkdown
+      const parts = content.split('\n\n')
+      content = parse(`<p>${parts.join('</p><p>')}</p>`)
+      const mapper = ['5:6', '4:6', '3:5', '2:4', '1:3']
+      if (smallHeading) {
+        for (const m of mapper) {
+          const [from, to] = m.split(':')
+          content = content.replaceAll(`<h${from}>`, `<h${to}>`).replaceAll(`</h${from}>`, `</h${to}>`)
+        }
+      }
+      return content
+    }
   }
 
   return BajoTemplate

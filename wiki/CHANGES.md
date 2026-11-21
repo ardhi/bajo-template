@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-11-22
+
+- [2.12.0] Add `formatContent()`
+
 ## 2026-11-20
 
 - [2.11.0] Refactor `getExcerpt()` to use `aneka.createExcerpt()` instead

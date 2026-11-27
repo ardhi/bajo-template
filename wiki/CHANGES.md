@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-11-27
+
+- [2.12.1] Bug fix in `_parseMarkdown()`
+
 ## 2026-11-22
 
 - [2.12.0] Add `formatContent()`

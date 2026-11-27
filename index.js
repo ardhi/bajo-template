@@ -86,9 +86,9 @@ async function factory (pkgName) {
         _titleize: this.app.lib.aneka.titleize,
         _hasPlugin: name => this.app.getAllNs().includes(name),
         _jsonStringify: this.app.waibuMpa.jsonStringify,
-        _parseMarkdown: content => {
-          if (!this.app.bajoMarkdown) return content
-          return this.app.bajoMarkdown.parseContent(content)
+        _parseMarkdown: (content, options) => {
+          if (this.app.bajoMarkdown) content = this.app.bajoMarkdown.parse(content)
+          return this.formatContent(content, options)
         },
         _excerpt: (content, words) => {
           return createExcerpt({ content, maxWords: words })
@@ -595,7 +595,7 @@ async function factory (pkgName) {
     }
 
     formatContent = (content, options = {}) => {
-      const { smallHeading = false } = options
+      const { smallHeading = true } = options
       const { parse } = this.app.bajoMarkdown
       const parts = content.split('\n\n')
       content = parse(`<p>${parts.join('</p><p>')}</p>`)
